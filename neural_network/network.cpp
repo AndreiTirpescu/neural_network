@@ -15,13 +15,13 @@ neural_network::network::network(neural_network::layer inputs, std::vector<layer
 void neural_network::network::feedForward() {
     for (int i = 0; i < layers.size() - 2; ++i) {
 
-        layers[i + 1].updateInputs(layers[i].weights() * layers[i].inputs());
+        layers[i + 1].updateInputs((*layers[i].weights()) * (*layers[i].inputs()));
         layers[i + 1].activate();
     }
 
     size_t last = layers.size() - 2;
     size_t outputs = layers.size() - 1;
-    layers[outputs].updateInputs(layers[last].weights() * layers[last].inputs() + layers[last].bias());
+    layers[outputs].updateInputs((*layers[last].weights()) * (*layers[last].inputs()) + (*layers[last].bias()));
     layers[outputs].activate();
 }
 
@@ -34,24 +34,24 @@ void neural_network::network::backProp() {
 }
 
 double neural_network::network::error() {
-    math::vector_d diff = expected - layers[layers.size() - 1].inputs();
+    math::vector_d diff = expected - (*layers[layers.size() - 1].inputs());
     return 0.5 * diff.sum_squared();
 }
 
 void neural_network::network::output() {
-    std::cout << "Network output:\n" << layers[layers.size() - 1].inputs();
+    std::cout << "Network output:\n" << *layers[layers.size() - 1].inputs();
 }
 
 math::vector_d neural_network::network::deltaOutputs() {
     size_t outputIndex = layers.size() - 1;
 
-    math::vector_d deltas{layers[outputIndex].inputs().size()};
+    math::vector_d deltas{layers[outputIndex].inputs()->size()};
 
     for (int i = 0; i < deltas.size(); ++i) {
 
-        double deriv = layers[outputIndex].derivative()(layers[outputIndex].inputs()[i]);
+        double deriv = layers[outputIndex].derivative()(layers[outputIndex].inputs()->at(i));
 
-        deltas[i] = (expected[i] - layers[outputIndex].inputs()[i]) * deriv;
+        deltas[i] = (expected[i] - layers[outputIndex].inputs()->at(i)) * deriv;
     }
 
     return deltas;
@@ -61,7 +61,7 @@ std::vector<math::vector_d> neural_network::network::computeHiddenDeltas(const m
     std::vector<math::vector_d> deltas;
 
     for (auto &layer : layers) {
-        deltas.emplace_back(layer.inputs().size());
+        deltas.emplace_back(layer.inputs()->size());
     }
 
     deltas[deltas.size() - 1] = outputDeltas;
@@ -73,8 +73,8 @@ std::vector<math::vector_d> neural_network::network::computeHiddenDeltas(const m
         for (int j = 0; j < deltas[layerIndex].size(); ++j) {
             double sum = 0;
             for (int k = 0; k < deltas[layerIndex + 1].size(); ++k) {
-                double deriv = currentLayer.derivative()(currentLayer.inputs()[j]);
-                double weight = currentLayer.weights().at(k, j) * deriv;
+                double deriv = currentLayer.derivative()(currentLayer.inputs()->at(j));
+                double weight = currentLayer.weights()->at(k, j) * deriv;
                 sum += deltas[layerIndex + 1][k] * weight;
             }
 
@@ -90,10 +90,10 @@ void neural_network::network::computeDerivativeWithRespectToWeights(const std::v
         const auto &layer = layers[layerIndex];
         auto &prevLayer = layers[layerIndex - 1];
 
-        for (int j = 0; j < layer.inputs().size(); ++j) {
-            for (int k = 0; k < prevLayer.inputs().size(); ++k) {
+        for (int j = 0; j < layer.inputs()->size(); ++j) {
+            for (int k = 0; k < prevLayer.inputs()->size(); ++k) {
                 double delta = hiddenDeltas[layerIndex][j];
-                double ak = prevLayer.inputs()[k];
+                double ak = prevLayer.inputs()->at(k);
                 prevLayer.updateDerivativeAt(j, k, delta * ak);
             }
         }
@@ -104,8 +104,8 @@ void neural_network::network::updateWeights() {
     for (int layerIndex = (int) layers.size() - 2; layerIndex >= 0; --layerIndex) {
         auto &layer = layers[layerIndex];
 
-        for (int i = 0; i < layer.weights().rowCount(); ++i) {
-            for (int j = 0; j < layer.weights().columnCount(); ++j) {
+        for (int i = 0; i < layer.weights()->rowCount(); ++i) {
+            for (int j = 0; j < layer.weights()->columnCount(); ++j) {
                 layer.updateWeightAt(i, j, learningRate);
             }
         }

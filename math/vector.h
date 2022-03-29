@@ -88,6 +88,10 @@ namespace math {
             return pElements[index];
         }
 
+        T& at(int index) const {
+            return pElements[index];
+        }
+
         friend vector operator+(const vector& x, const vector& y) {
             vector result = x;
             for (int i = 0; i < x.length; ++i) {
@@ -158,7 +162,7 @@ namespace math {
             return result;
         }
 
-        int size() const {
+        [[nodiscard]] int size() const {
             return length;
         }
 
@@ -168,4 +172,5 @@ namespace math {
     };
 
     using vector_d = math::vector<double>;
+    using vector_dPtr = std::shared_ptr<vector_d>;
 }

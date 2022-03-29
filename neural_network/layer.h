@@ -12,18 +12,18 @@ namespace neural_network {
 
     class layer {
     public:
-        layer(math::vector_d inputs, math::matrix_d weights, math::vector_d bias);
+        layer(const math::vector_d &inputs, const math::matrix_d &weights, const math::vector_d &bias,
+              activation_function activation, derivative_function derivative);
 
-        layer(math::vector_d inputs, math::matrix_d weights, math::vector_d bias, activation_function activation,
-              derivative_function derivative);
+        layer(const math::vector_d &inputs, const math::matrix_d &weights, const math::vector_d &bias);
 
-        [[nodiscard]] const math::vector_d &inputs() const;
+        [[nodiscard]] math::vector_dPtr inputs() const;
 
-        [[nodiscard]] const math::matrix_d &weights() const;
+        [[nodiscard]] math::matrix_dPtr weights() const;
 
-        [[nodiscard]] const math::vector_d &bias() const;
+        [[nodiscard]] math::vector_dPtr bias() const;
 
-        void updateInputs(const math::vector_d &updated);
+        void updateInputs(const math::vector_d& updated);
 
         [[nodiscard]] const activation_function &derivative() const;
 
@@ -34,10 +34,10 @@ namespace neural_network {
         void updateWeightAt(int i, int j, double learningRate);
 
     private:
-        math::vector_d inputVector;
-        math::vector_d biases;
-        math::matrix_d weightMatrix;
-        math::matrix_d derivativeWithRespectToWeights;
+        math::vector_dPtr inputVector;
+        math::vector_dPtr biases;
+        math::matrix_dPtr weightMatrix;
+        math::matrix_dPtr derivativeWithRespectToWeights;
 
         activation_function activationFunction;
         derivative_function derivativeFunction;

@@ -207,4 +207,5 @@ namespace math {
     };
 
     using matrix_d = math::matrix<double>;
+    using matrix_dPtr = std::shared_ptr<matrix_d>;
 }
