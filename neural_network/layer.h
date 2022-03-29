@@ -42,4 +42,6 @@ namespace neural_network {
         activation_function activationFunction;
         derivative_function derivativeFunction;
     };
+
+    using layerPtr = std::shared_ptr<layer>;
 }

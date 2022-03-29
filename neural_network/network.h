@@ -14,8 +14,8 @@ namespace neural_network {
     class network {
 
     public:
-        network(layer inputs, std::vector<layer> hiddenLayers,
-                math::vector_d expected, double learningRate);
+        network(const neural_network::layer &inputs, const std::vector<layer> &hiddenLayers,
+                const math::vector_d &expected, double learningRate);
 
         void feedForward();
 
@@ -26,8 +26,8 @@ namespace neural_network {
         void output();
 
     private:
-        std::vector<layer> layers;
-        math::vector_d expected;
+        std::vector<layerPtr> layers;
+        math::vector_dPtr expected;
         double learningRate;
 
         math::vector_d deltaOutputs();
