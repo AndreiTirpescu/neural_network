@@ -4,23 +4,20 @@
 
 #include "neural_network/network.h"
 #include "math/functions/sigmoid.h"
+#include "math/utils/random_matrix_generator.h"
 
 int main() {
 
     neural_network::network network(
-            neural_network::layer(
-                    math::vector_d({1.0, 0.0}),
-                    math::matrix_d({{0.85766315, 0.05015078},
-                                    {-0.25091461,  -0.90849043},
-                                    {-0.05035739,  -0.52372058}}),
-                    math::vector_d({0, 0, 0})
-            ),
             {
                     neural_network::layer(
+                            math::vector_d({1.0, 0.0}),
+                            math::utils::random_matrix_generator::generate(3, 2),
+                            math::vector_d({0, 0, 0})
+                    ),
+                    neural_network::layer(
                             math::vector_d({0.0, 0.0, 0.0}),
-                            math::matrix_d({
-                                                   {-0.15254847, -0.00120349, -0.25596635}
-                                           }),
+                            math::utils::random_matrix_generator::generate(1, 3),
                             math::vector_d({0, 0, 0}),
                             math::functions::sigmoid::activate,
                             math::functions::sigmoid::derivative

@@ -3,9 +3,11 @@ project(untitled)
 
 set(CMAKE_CXX_STANDARD 17)
 include_directories(.)
+
 add_executable(neural_network
         main.cpp
         math/functions/sigmoid.h
+        math/utils/random_matrix_generator.h
         math/matrix.h
         math/vector.h
         neural_network/layer.cpp

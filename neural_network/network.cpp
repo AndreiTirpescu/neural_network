@@ -1,13 +1,11 @@
 #include "network.h"
 
-neural_network::network::network(const neural_network::layer &inputs, const std::vector<layer> &hiddenLayers,
+neural_network::network::network(const std::vector<layer> &layers,
                                  const math::vector_d &expected,
                                  double learningRate) : expected(new math::vector(expected)),
                                                         learningRate(learningRate) {
-    layers.push_back(std::make_shared<layer>(layer(inputs)));
-
-    for (const auto& it : hiddenLayers) {
-        layers.push_back(std::make_shared<layer>(layer(it)));
+    for (const auto& it : layers) {
+        this->layers.push_back(std::make_shared<layer>(layer(it)));
     }
 
 }

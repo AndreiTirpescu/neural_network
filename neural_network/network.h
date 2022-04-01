@@ -14,8 +14,7 @@ namespace neural_network {
     class network {
 
     public:
-        network(const neural_network::layer &inputs, const std::vector<layer> &hiddenLayers,
-                const math::vector_d &expected, double learningRate);
+        network(const std::vector<layer> &hiddenLayers, const math::vector_d &expected, double learningRate);
 
         void feedForward();
 
