@@ -1,24 +1,12 @@
-//
-// Created by andrei on 29.03.2022.
-//
-
 #include "layer.h"
 
-neural_network::layer::layer(const math::vector_d& inputs, const math::matrix_d& weights, const math::vector_d& bias)
-        : inputVector(new math::vector_d(inputs)),
-          weightMatrix(new math::matrix_d(weights)),
-          biases(new math::vector_d(bias)),
-          derivativeWithRespectToWeights(new math::matrix_d(weightMatrix->rowCount(), weightMatrix->columnCount())) {}
-
-neural_network::layer::layer(const math::vector_d& inputs, const math::matrix_d& weights, const math::vector_d& bias,
-                             neural_network::activation_function activation,
-                             neural_network::derivative_function derivative)
-        : inputVector(new math::vector_d(inputs)),
-          weightMatrix(new math::matrix_d(weights)),
-          biases(new math::vector_d(bias)),
+neural_network::layer::layer(const layer_descriptor &descriptor)
+        : inputVector(new math::vector_d(descriptor.numberOfInputs)),
+          weightMatrix(new math::matrix_d(descriptor.weightGenerator(descriptor.weightRowCount, descriptor.weightColCount))),
+          activationFunction(descriptor.activation),
+          derivativeFunction(descriptor.activation_derivative),
           derivativeWithRespectToWeights(new math::matrix_d(weightMatrix->rowCount(), weightMatrix->columnCount())),
-          activationFunction(std::move(activation)),
-          derivativeFunction(std::move(derivative)) {}
+          biases(new math::vector_d(math::vector_d{descriptor.weightColCount})){}
 
 math::vector_dPtr neural_network::layer::inputs() const {
     return inputVector;
@@ -55,3 +43,4 @@ void neural_network::layer::updateDerivativeAt(int i, int j, double val) {
 void neural_network::layer::updateWeightAt(int i, int j, double learningRate) {
     weightMatrix->at(i, j) = weightMatrix->at(i, j) +  learningRate *  derivativeWithRespectToWeights->at(i, j);
 }
+

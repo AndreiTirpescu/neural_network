@@ -2,6 +2,7 @@
 
 #include "math/vector.h"
 #include "math/matrix.h"
+#include "layer_descriptor.h"
 
 #include <utility>
 #include <functional>
@@ -12,10 +13,7 @@ namespace neural_network {
 
     class layer {
     public:
-        layer(const math::vector_d &inputs, const math::matrix_d &weights, const math::vector_d &bias,
-              activation_function activation, derivative_function derivative);
-
-        layer(const math::vector_d &inputs, const math::matrix_d &weights, const math::vector_d &bias);
+        explicit layer(const layer_descriptor &descriptor);
 
         [[nodiscard]] math::vector_dPtr inputs() const;
 
@@ -23,7 +21,7 @@ namespace neural_network {
 
         [[nodiscard]] math::vector_dPtr bias() const;
 
-        void updateInputs(const math::vector_d& updated);
+        void updateInputs(const math::vector_d &updated);
 
         [[nodiscard]] const activation_function &derivative() const;
 

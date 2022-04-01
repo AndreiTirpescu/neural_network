@@ -1,12 +1,9 @@
 #include "network.h"
 
-neural_network::network::network(const std::vector<layer> &layers,
-                                 const math::vector_d &expected,
-                                 double learningRate) : expected(new math::vector(expected)),
-                                                        learningRate(learningRate) {
-    for (const auto& it : layers) {
-        this->layers.push_back(std::make_shared<layer>(layer(it)));
-    }
+neural_network::network::network(const neural_network::network_descriptor_Ptr &descriptor)
+    :   layers({descriptor->networkLayers}),
+        expected(new math::vector_d(descriptor->networkTrainData.at(0)->expected)),
+        learningRate(descriptor->learningRate) {
 
 }
 

@@ -10,7 +10,14 @@ namespace math {
     template<class T>
     class vector {
     public:
-        explicit vector(int size) : length(size) {
+        vector(const std::vector<T>& elements) : length(elements.size()) {
+            pElements = new T[length];
+            for (int i = 0; i < length; ++i) {
+                pElements[i] = elements[i];
+            }
+        }
+
+        vector(int size) : length(size) {
             pElements = new T[size];
             for (int i = 0; i < length; ++i) {
                 pElements[i] = 0;
@@ -24,12 +31,7 @@ namespace math {
             }
         }
 
-        explicit vector(const std::vector<T>& elements) : length(elements.size()) {
-            pElements = new T[length];
-            for (int i = 0; i < length; ++i) {
-                pElements[i] = elements[i];
-            }
-        }
+
 
         vector(const vector<T>& other) {
             length = other.length;

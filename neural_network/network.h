@@ -9,12 +9,15 @@
 
 #include <iostream>
 
+#include "network_descriptor.h"
+
 namespace neural_network {
 
     class network {
 
     public:
-        network(const std::vector<layer> &hiddenLayers, const math::vector_d &expected, double learningRate);
+//        network(const std::vector<layer> &hiddenLayers, const math::vector_d &expected, double learningRate);
+        explicit network(const network_descriptor_Ptr& descriptor);
 
         void feedForward();
 
