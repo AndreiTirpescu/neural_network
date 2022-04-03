@@ -40,7 +40,22 @@ void neural_network::layer::updateDerivativeAt(int i, int j, double val) {
     derivativeWithRespectToWeights->at(i, j) = val;
 }
 
-void neural_network::layer::updateWeightAt(int i, int j, double learningRate) {
-    weightMatrix->at(i, j) = weightMatrix->at(i, j) +  learningRate *  derivativeWithRespectToWeights->at(i, j);
+void neural_network::layer::updateWeightAt(int i, int j, double learningRate, int trainingDataSetCount) {
+
+    double average =  ( (1.0 / (double)trainingDataSetCount) * derivativeWithRespectToWeights->at(i, j));
+
+    weightMatrix->at(i, j) = weightMatrix->at(i, j) + learningRate *  average;
+}
+
+double neural_network::layer::getDerivativeAt(int i, int j) const {
+    return derivativeWithRespectToWeights->at(i, j);
+}
+
+void neural_network::layer::clearDerivatives() {
+    for (int i = 0; i < derivativeWithRespectToWeights->rowCount(); ++i) {
+        for (int j = 0; j < derivativeWithRespectToWeights->columnCount(); ++j) {
+            derivativeWithRespectToWeights->at(i, j) = 0.0;
+        }
+    }
 }
 

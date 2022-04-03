@@ -5,7 +5,7 @@
 
 namespace neural_network {
     struct network_descriptor {
-        std::vector<train_data_Ptr> networkTrainData{};
+        std::vector<train_dataPtr> networkTrainData{};
         std::vector<layerPtr> networkLayers{};
         double learningRate{};
     };

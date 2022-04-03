@@ -69,7 +69,7 @@ neural_network::network_builder::withInputLayer(int inputLayerSize, const neural
 }
 
 neural_network::network_builder &neural_network::network_builder::withOutputLayer() {
-    int outputLayerSize = networkDescriptor->networkTrainData.at(0)->expected.size();
+    int outputLayerSize = networkDescriptor->networkTrainData.at(0)->expected->size();
 
     networkDescriptor->networkLayers.push_back(std::make_shared<layer>(
             layer({
@@ -87,7 +87,7 @@ neural_network::network_builder &neural_network::network_builder::withOutputLaye
 
 std::shared_ptr<neural_network::network> neural_network::network_builder::build() {
     this->withInputLayer(
-            networkDescriptor->networkTrainData.at(0)->input.size(),
+            networkDescriptor->networkTrainData.at(0)->input->size(),
             math::utils::random_matrix_generator::generate
     ).withOutputLayer();
 

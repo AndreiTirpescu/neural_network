@@ -2,7 +2,7 @@
 
 neural_network::network::network(const neural_network::network_descriptor_Ptr &descriptor)
     :   layers({descriptor->networkLayers}),
-        expected(new math::vector_d(descriptor->networkTrainData.at(0)->expected)),
+        trainDataSet(descriptor->networkTrainData),
         learningRate(descriptor->learningRate) {
 
 }
@@ -20,15 +20,13 @@ void neural_network::network::feedForward() {
     layers[outputs]->activate();
 }
 
-void neural_network::network::backProp() {
-    std::vector<math::vector_d> hiddenDeltas = computeHiddenDeltas(deltaOutputs());
+void neural_network::network::backProp(const math::vector_dPtr& expected) {
+    std::vector<math::vector_d> hiddenDeltas = computeHiddenDeltas(deltaOutputs(expected));
 
     computeDerivativeWithRespectToWeights(hiddenDeltas);
-
-    updateWeights();
 }
 
-double neural_network::network::error() {
+double neural_network::network::error(const math::vector_dPtr& expected) {
     math::vector_d diff = (*expected) - (*layers[layers.size() - 1]->inputs());
     return 0.5 * diff.sum_squared();
 }
@@ -37,7 +35,7 @@ void neural_network::network::output() {
     std::cout << "Network output:\n" << *layers[layers.size() - 1]->inputs();
 }
 
-math::vector_d neural_network::network::deltaOutputs() {
+math::vector_d neural_network::network::deltaOutputs(const math::vector_dPtr& expected) {
     size_t outputIndex = layers.size() - 1;
 
     math::vector_d deltas{layers[outputIndex]->inputs()->size()};
@@ -88,7 +86,7 @@ void neural_network::network::computeDerivativeWithRespectToWeights(const std::v
             for (int k = 0; k < prevLayer->inputs()->size(); ++k) {
                 double delta = hiddenDeltas[layerIndex][j];
                 double ak = prevLayer->inputs()->at(k);
-                prevLayer->updateDerivativeAt(j, k, delta * ak);
+                prevLayer->updateDerivativeAt(j, k,  prevLayer->getDerivativeAt(j, k) + delta * ak);
             }
         }
     }
@@ -100,8 +98,41 @@ void neural_network::network::updateWeights() {
 
         for (int i = 0; i < layer->weights()->rowCount(); ++i) {
             for (int j = 0; j < layer->weights()->columnCount(); ++j) {
-                layer->updateWeightAt(i, j, learningRate);
+                layer->updateWeightAt(i, j,  learningRate, trainDataSet.size());
             }
         }
+    }
+}
+
+void neural_network::network::setInputs(const math::vector_d &inputs) {
+    layers.at(0)->updateInputs(inputs);
+}
+
+void neural_network::network::train(int epochsCount) {
+    for (int i = 0; i < epochsCount; ++i) {
+        for (auto & trainingData : trainDataSet) {
+            setInputs(*trainingData->input);
+            feedForward();
+
+            std::cout << "Error: " << error(trainingData->expected) << "\n";
+
+            backProp(trainingData->expected);
+        }
+
+        updateWeights();
+
+        for (auto& layer : layers) {
+            layer->clearDerivatives();
+        }
+    }
+}
+
+void neural_network::network::test() {
+    for (auto & trainingData : trainDataSet) {
+        setInputs(*trainingData->input);
+        feedForward();
+        std::cout << "Input: " << *trainingData->input;
+        std::cout << "Expected: " << *trainingData->expected;
+        std::cout << "Output: " << *layers[layers.size() - 1]->inputs() << '\n';
     }
 }

@@ -10,9 +10,7 @@ namespace math::functions {
         }
 
         static double derivative(double input) {
-            double sigma = activate(input);
-
-            return sigma * (1 - sigma);
+            return input * (1 - input);
         }
     };
 }

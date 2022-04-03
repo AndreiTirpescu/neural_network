@@ -29,7 +29,11 @@ namespace neural_network {
 
         void updateDerivativeAt(int i, int j, double val);
 
-        void updateWeightAt(int i, int j, double learningRate);
+        void updateWeightAt(int i, int j, double learningRate, int trainingDataSetCount);
+
+        [[nodiscard]] double getDerivativeAt(int i, int j) const;
+
+        void clearDerivatives();
 
     private:
         math::vector_dPtr inputVector;

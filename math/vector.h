@@ -80,9 +80,9 @@ namespace math {
 
         friend std::ostream &operator<<(std::ostream &os, const vector &vector) {
             for (int index = 0; index < vector.length; ++index) {
-                os << vector[index] << '\n';
+                os << vector[index] << ' ';
             }
-            os << "\n";
+
             return os;
         }
 

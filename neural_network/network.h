@@ -16,23 +16,28 @@ namespace neural_network {
     class network {
 
     public:
-//        network(const std::vector<layer> &hiddenLayers, const math::vector_d &expected, double learningRate);
         explicit network(const network_descriptor_Ptr& descriptor);
 
         void feedForward();
 
-        void backProp();
+        void backProp(const math::vector_dPtr& expected);
 
-        double error();
+        double error(const math::vector_dPtr& expected);
 
         void output();
 
+        void setInputs(const math::vector_d& inputs);
+
+        void train(int epochsCount);
+
+        void test();
+
     private:
         std::vector<layerPtr> layers;
-        math::vector_dPtr expected;
+        std::vector<train_dataPtr> trainDataSet;
         double learningRate;
 
-        math::vector_d deltaOutputs();
+        math::vector_d deltaOutputs(const math::vector_dPtr& expected);
 
         std::vector<math::vector_d> computeHiddenDeltas(const math::vector_d &outputDeltas);
 
